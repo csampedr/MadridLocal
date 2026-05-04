@@ -1,14 +1,13 @@
 document.getElementById("form").addEventListener("submit", (e) => {
     e.preventDefault();
 
-    Papa.parse("data/negocios_scored.csv", {
-        download: true,
-        header: true,
-        complete: function(results) {
-            const data = results.data;
-            filtrarLocales(data);
-        }
-    });
+    Papa.parse("https://raw.githubusercontent.com/csampedr/MadridLocal/main/data/negocios_scored.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+        filtrarLocales(results.data);
+    }
+});
 });
 
 function filtrarLocales(data) {
