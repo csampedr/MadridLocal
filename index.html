@@ -4,7 +4,7 @@
     <title>Recomendador de Locales</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- Leaflet para mapas -->
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -16,18 +16,17 @@
 
 <h1>Recomendador de Locales</h1>
 
-<form method="POST">
+<form id="form">
     <label>Tipo de negocio:</label>
-    <select name="tipo_negocio">
+    <select id="tipo_negocio">
         <option>BAR RESTAURANTE</option>
         <option>RESTAURANTE</option>
         <option>CAFETERIA</option>
         <option>BAR CON COCINA</option>
-        <!-- agrega todas las opciones -->
     </select>
 
     <label>Público objetivo:</label>
-    <select name="publico_objetivo">
+    <select id="publico_objetivo">
         <option>joven</option>
         <option>millennial</option>
         <option>familiar</option>
@@ -35,22 +34,22 @@
     </select>
 
     <label>Terraza:</label>
-    <select name="terraza">
+    <select id="terraza">
         <option value="1">Sí</option>
         <option value="0">No</option>
     </select>
 
     <label>Horario nocturno:</label>
-    <select name="horario_nocturno">
+    <select id="horario_nocturno">
         <option value="1">Sí</option>
         <option value="0">No</option>
     </select>
 
     <label>Presupuesto (€):</label>
-    <input type="number" name="presupuesto">
+    <input type="number" id="presupuesto">
 
     <label>Metros cuadrados:</label>
-    <input type="number" name="metros">
+    <input type="number" id="metros">
 
     <button type="submit">Recomendar locales</button>
 </form>
@@ -58,13 +57,7 @@
 <div class="container">
     <div class="left">
         <h2>Locales recomendados</h2>
-        {% if locales %}
-            <ul>
-                {% for l in locales %}
-                    <li>{{ l.desc_barrio_local }} — {{ l.desc_epigrafe }} — {{ l.lat }}, {{ l.lon }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <ul id="lista_locales"></ul>
     </div>
 
     <div class="right">
@@ -75,11 +68,6 @@
         <div id="heatmap" style="height: 400px;"></div>
     </div>
 </div>
-
-<script>
-    const locales = {{ locales|tojson|default("[]", true) }};
-</script>
-
 
 <script src="script.js"></script>
 
