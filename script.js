@@ -1,15 +1,21 @@
+// --- CARGA DEL CSV DESDE RAW GITHUB (ARCHIVOS GRANDES) ---
+const CSV_URL = "https://raw.githubusercontent.com/csampedr/MadridLocal/main/data/negocios_scored.csv";
+
+// --- MANEJO DEL FORMULARIO ---
 document.getElementById("form").addEventListener("submit", (e) => {
     e.preventDefault();
 
-    Papa.parse("https://raw.githubusercontent.com/csampedr/MadridLocal/main/data/negocios_scored.csv", {
-    download: true,
-    header: true,
-    complete: function(results) {
-        filtrarLocales(results.data);
-    }
-});
+    Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const data = results.data;
+            filtrarLocales(data);
+        }
+    });
 });
 
+// --- FILTRADO ---
 function filtrarLocales(data) {
     const tipo = document.getElementById("tipo_negocio").value;
     const publico = document.getElementById("publico_objetivo").value;
@@ -32,6 +38,7 @@ function filtrarLocales(data) {
     mostrarHeatmap(filtrados);
 }
 
+// --- LISTA DE LOCALES ---
 function mostrarLocales(locales) {
     const lista = document.getElementById("lista_locales");
     lista.innerHTML = "";
@@ -43,21 +50,41 @@ function mostrarLocales(locales) {
     });
 }
 
+// --- MAPA PRINCIPAL ---
 function mostrarMapa(locales) {
-    const map = L.map("map").setView([40.4168, -3.7038], 12);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    // Si ya existe un mapa, destruirlo
+    if (window.map) {
+        window.map.remove();
+    }
+
+    window.map = L.map("map").setView([40.4168, -3.7038], 12);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.map);
 
     locales.forEach(l => {
-        L.marker([l.lat, l.lon]).addTo(map);
+        if (l.lat && l.lon) {
+            L.marker([l.lat, l.lon]).addTo(window.map);
+        }
     });
 }
 
+// --- HEATMAP ---
 function mostrarHeatmap(locales) {
-    const heat = L.map("heatmap").setView([40.4168, -3.7038], 12);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(heat);
+    // Si ya existe un heatmap, destruirlo
+    if (window.heat) {
+        window.heat.remove();
+    }
 
-    const puntos = locales.map(l => [l.lat, l.lon, 0.5]);
-    L.heatLayer(puntos, { radius: 25 }).addTo(heat);
+    window.heat = L.map("heatmap").setView([40.4168, -3.7038], 12);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.heat);
+
+    const puntos = locales
+        .filter(l => l.lat && l.lon)
+        .map(l => [parseFloat(l.lat), parseFloat(l.lon), 0.5]);
+
+    L.heatLayer(puntos, { radius: 25 }).addTo(window.heat);
 }
+
 
 
