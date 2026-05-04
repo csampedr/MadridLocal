@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recomendador de Locales</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Leaflet para mapas -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Heatmap plugin -->
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+
+<body>
+
+<h1>Recomendador de Locales</h1>
+
+<form method="POST">
+    <label>Tipo de negocio:</label>
+    <select name="tipo_negocio">
+        <option>BAR RESTAURANTE</option>
+        <option>RESTAURANTE</option>
+        <option>CAFETERIA</option>
+        <option>BAR CON COCINA</option>
+        <!-- agrega todas las opciones -->
+    </select>
+
+    <label>Público objetivo:</label>
+    <select name="publico_objetivo">
+        <option>joven</option>
+        <option>millennial</option>
+        <option>familiar</option>
+        <option>senior</option>
+    </select>
+
+    <label>Terraza:</label>
+    <select name="terraza">
+        <option value="1">Sí</option>
+        <option value="0">No</option>
+    </select>
+
+    <label>Horario nocturno:</label>
+    <select name="horario_nocturno">
+        <option value="1">Sí</option>
+        <option value="0">No</option>
+    </select>
+
+    <label>Presupuesto (€):</label>
+    <input type="number" name="presupuesto">
+
+    <label>Metros cuadrados:</label>
+    <input type="number" name="metros">
+
+    <button type="submit">Recomendar locales</button>
+</form>
+
+<div class="container">
+    <div class="left">
+        <h2>Locales recomendados</h2>
+        {% if locales %}
+            <ul>
+                {% for l in locales %}
+                    <li>{{ l.desc_barrio_local }} — {{ l.desc_epigrafe }} — {{ l.lat }}, {{ l.lon }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="right">
+        <h2>Mapa de locales recomendados</h2>
+        <div id="map" style="height: 400px;"></div>
+
+        <h2>Mapa de calor por distrito</h2>
+        <div id="heatmap" style="height: 400px;"></div>
+    </div>
+</div>
+
+<script>
+    const locales = {{ locales|tojson|default("[]", true) }};
+</script>
+
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
